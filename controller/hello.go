@@ -4,14 +4,16 @@ import (
     "net/http"
     "fmt"
 
-    "github.com/zenazn/goji"
-    "github.com/zenazn/goji/web"
+    "github.com/ender4021/covenant/model"
+    "github.com/ender4021/covenant/service"
 )
 
+var g = service.CovenantServer_Goji{}
+
 func RegisterHelloController() {
-    goji.Get("/hello/:name", hello)
+    g.Get("/hello/:name", hello)
 }
 
-func hello(c web.C, w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Hello, %s!", c.URLParams["name"])
+func hello(c model.CovenantContext, w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Hello, %s!", c.GetUrlParam("name"))
 }
