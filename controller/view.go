@@ -7,14 +7,15 @@ import (
     "path/filepath"
     "net/http"
 
-    "github.com/zenazn/goji"
+    "github.com/ender4021/covenant/model"
+    "github.com/ender4021/covenant/service"
 )
 
-func RegisterViewController() {
-    goji.Get("/view/:view", viewHandler)
+func RegisterViewController(server service.Server) {
+    server.Get("/view/:view", viewHandler)
 }
 
-func viewHandler(response http.ResponseWriter, request *http.Request) {
+func viewHandler(c model.Context, response http.ResponseWriter, request *http.Request) {
     title := request.URL.Path[len("/view/"):]
     page, err := loadPage(title)
     if err == nil {

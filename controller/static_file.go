@@ -5,27 +5,27 @@ import (
     "net/http"
     "fmt"
 
-    "github.com/zenazn/goji"
-    "github.com/zenazn/goji/web"
+    "github.com/ender4021/covenant/model"
+    "github.com/ender4021/covenant/service"
 )
 
-func RegisterStaticFileController() {
+func RegisterStaticFileController(server service.Server) {
     cssRegex := regexp.MustCompile("^/css/(?P<fileName>.+\\.css)$")
     jsRegex := regexp.MustCompile("^/js/(?P<fileName>.+\\.js)$")
 
-    goji.Get(cssRegex, getCssFile)
-    goji.Get(jsRegex, getJsFile)
-    goji.Get("/favicon.ico", getFavicon)
+    server.Get(cssRegex, getCssFile)
+    server.Get(jsRegex, getJsFile)
+    server.Get("/favicon.ico", getFavicon)
 }
 
-func getCssFile(c web.C, w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Rendering \"css\" %s %s", c.URLParams["fileName"], r.FormValue("kingdom"))
+func getCssFile(c model.Context, w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Rendering \"css\" %s %s", c.GetUrlParam("fileName"), r.FormValue("kingdom"))
 }
 
-func getJsFile(c web.C, w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Rendering \"js\" %s", c.URLParams["fileName"])
+func getJsFile(c model.Context, w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Rendering \"js\" %s", c.GetUrlParam("fileName"))
 }
 
-func getFavicon(c web.C, w http.ResponseWriter, r *http.Request) {
+func getFavicon(c model.Context, w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "Oops Favicon Not Found Lolz")
 }

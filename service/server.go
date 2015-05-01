@@ -9,16 +9,21 @@ import (
     "github.com/ender4021/covenant/model"
 )
 
-type CovenantServer interface {
-    Get(interface{}, func(model.CovenantContext, http.ResponseWriter, *http.Request))
+type Server interface {
+    Get(interface{}, func(model.Context, http.ResponseWriter, *http.Request))
+    Serve()
 }
 
-type CovenantServer_Goji struct {
+type gojiServer struct {
 
 }
 
-func (s *CovenantServer_Goji) Get(pattern interface{}, fn func(model.CovenantContext, http.ResponseWriter, *http.Request)) {
+func (s *gojiServer) Get(pattern interface{}, fn func(model.Context, http.ResponseWriter, *http.Request)) {
     goji.Get(pattern, func (c web.C, w http.ResponseWriter, r *http.Request) {
-        fn(&model.CovenantContext_Goji{GojiContext: c}, w, r)
+        fn(model.GetContext(c), w, r)
     })
+}
+
+func (s *gojiServer) Serve() {
+    goji.Serve()
 }

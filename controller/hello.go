@@ -8,12 +8,10 @@ import (
     "github.com/ender4021/covenant/service"
 )
 
-var g = service.CovenantServer_Goji{}
-
-func RegisterHelloController() {
-    g.Get("/hello/:name", hello)
+func RegisterHelloController(server service.Server) {
+    server.Get("/hello/:name", hello)
 }
 
-func hello(c model.CovenantContext, w http.ResponseWriter, r *http.Request) {
+func hello(c model.Context, w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "Hello, %s!", c.GetUrlParam("name"))
 }

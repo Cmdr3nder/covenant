@@ -4,29 +4,29 @@ import (
     "github.com/zenazn/goji/web"
 )
 
-type CovenantContext interface {
+type Context interface {
     GetUrlParam(string) string
     SetUrlParam(string, string)
     GetEnv(interface{}) interface{}
     SetEnv(interface{}, interface{})
 }
 
-type CovenantContext_Goji struct {
-    GojiContext web.C
+type gojiContext struct {
+    context web.C
 }
 
-func (c *CovenantContext_Goji) GetUrlParam(key string) string {
-    return c.GojiContext.URLParams[key]
+func (c *gojiContext) GetUrlParam(key string) string {
+    return c.context.URLParams[key]
 }
 
-func (c *CovenantContext_Goji) SetUrlParam(key string, value string) {
-    c.GojiContext.URLParams[key] = value
+func (c *gojiContext) SetUrlParam(key string, value string) {
+    c.context.URLParams[key] = value
 }
 
-func (c *CovenantContext_Goji) GetEnv(key interface{}) interface{} {
-    return c.GojiContext.Env[key]
+func (c *gojiContext) GetEnv(key interface{}) interface{} {
+    return c.context.Env[key]
 }
 
-func (c *CovenantContext_Goji) SetEnv(key interface{}, value interface{}) {
-    c.GojiContext.Env[key] = value
+func (c *gojiContext) SetEnv(key interface{}, value interface{}) {
+    c.context.Env[key] = value
 }
