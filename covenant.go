@@ -16,6 +16,7 @@ func main() {
 
     //Register Controllers
     controller.RegisterRootController(server)
+    controller.RegisterBlogController(server)
     controller.RegisterStaticFileController(server)
     controller.RegisterHelloController(server)
     controller.RegisterViewController(server)

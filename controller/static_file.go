@@ -11,10 +11,11 @@ import (
 
 func RegisterStaticFileController(server service.Server) {
     cssRegex := regexp.MustCompile("^/css/(?P<fileName>.+\\.css)$")
-    jsRegex := regexp.MustCompile("^/js/(?P<fileName>.+\\.js)$")
-
     server.Get(cssRegex, getCssFile)
+
+    jsRegex := regexp.MustCompile("^/js/(?P<fileName>.+\\.js)$")
     server.Get(jsRegex, getJsFile)
+
     server.Get("/favicon.ico", getFavicon)
 }
 
