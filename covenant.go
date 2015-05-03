@@ -3,19 +3,24 @@ package main
 import (
     "fmt"
 
-    "github.com/spf13/viper"
-
     "github.com/ender4021/covenant/controller"
     "github.com/ender4021/covenant/service"
 )
 
 func main() {
     server := service.GetServer()
+    config := service.GetConfig()
 
-    readConfigFile()
+    config.SetConfigName("covenant_config")
+    config.AddConfigPath("$HOME/.covenant")
+    err := config.ReadInConfig()
+    if err != nil {
+        panic(fmt.Errorf("Fatal error config file: %s \n", err))
+    }
+    SetupViewConfigDefaults(config)
 
     //Register Controllers
-    controller.RegisterRootController(server)
+    controller.RegisterRootController(server, config)
     controller.RegisterBlogController(server)
     controller.RegisterStaticFileController(server)
     controller.RegisterHelloController(server)
@@ -24,14 +29,9 @@ func main() {
     server.Serve()
 }
 
-func readConfigFile() {
-    viper.SetConfigName("covenant_config")
-
-    viper.AddConfigPath("$HOME/.covenant")
-
-    err := viper.ReadInConfig()
-
-    if err != nil {
-        panic(fmt.Errorf("Fatal error config file: %s \n", err))
-    }
+func SetupViewConfigDefaults(config service.Config) {
+    config.SetDefault("views_root", "./view")
+    config.SetDefault("views_shared", config.GetString("views_root") + "/shared")
+    config.SetDefault("views_index", config.GetString("views_shared") + "/index.html")
+    fmt.Printf("Views Index: %s\n", config.GetString("views_index"))
 }
