@@ -22,6 +22,7 @@ func main() {
     //Register Controllers
     controller.RegisterRootController(server, config)
     controller.RegisterBlogController(server)
+    controller.RegisterResumeController(server)
     controller.RegisterStaticFileController(server)
 
     server.Serve()
