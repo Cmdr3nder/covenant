@@ -23,8 +23,6 @@ func main() {
     controller.RegisterRootController(server, config)
     controller.RegisterBlogController(server)
     controller.RegisterStaticFileController(server)
-    controller.RegisterHelloController(server)
-    controller.RegisterViewController(server)
 
     server.Serve()
 }
