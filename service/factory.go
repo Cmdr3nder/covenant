@@ -1,22 +1,25 @@
 package service
 
 import (
-    "bytes"
+	"bytes"
 
-    "github.com/spf13/viper"
+	"github.com/spf13/viper"
 )
 
 var server = &gojiServer{}
 var config = &viperConfig{v: viper.New()}
 
+// GetServer returns the single instance of Server
 func GetServer() Server {
-    return server
+	return server
 }
 
+// GetConfig returns the single instance of Config
 func GetConfig() Config {
-    return config
+	return config
 }
 
+// GetRouteBuilder returns a new RouteBuilder
 func GetRouteBuilder() RouteBuilder {
-    return &goRouteBuilder{buffer: bytes.Buffer{}}
+	return &goRouteBuilder{buffer: bytes.Buffer{}}
 }

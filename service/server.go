@@ -1,29 +1,28 @@
 package service
 
 import (
-    "net/http"
+	"net/http"
 
-    "github.com/zenazn/goji"
-    "github.com/zenazn/goji/web"
+	"github.com/zenazn/goji"
+	"github.com/zenazn/goji/web"
 
-    "github.com/ender4021/covenant/model"
+	"github.com/ender4021/covenant/model"
 )
 
+// Server is the interface for an http server based on our Context interface
 type Server interface {
-    Get(interface{}, func(model.Context, http.ResponseWriter, *http.Request))
-    Serve()
+	Get(interface{}, func(model.Context, http.ResponseWriter, *http.Request))
+	Serve()
 }
 
-type gojiServer struct {
-
-}
+type gojiServer struct{}
 
 func (s *gojiServer) Get(pattern interface{}, fn func(model.Context, http.ResponseWriter, *http.Request)) {
-    goji.Get(pattern, func (c web.C, w http.ResponseWriter, r *http.Request) {
-        fn(model.GetContext(c), w, r)
-    })
+	goji.Get(pattern, func(c web.C, w http.ResponseWriter, r *http.Request) {
+		fn(model.GetContext(c), w, r)
+	})
 }
 
 func (s *gojiServer) Serve() {
-    goji.Serve()
+	goji.Serve()
 }
