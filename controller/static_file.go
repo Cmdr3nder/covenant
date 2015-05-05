@@ -1,7 +1,6 @@
 package controller
 
 import (
-    "regexp"
     "net/http"
     "fmt"
 
@@ -10,11 +9,11 @@ import (
 )
 
 func RegisterStaticFileController(server service.Server) {
-    cssRegex := regexp.MustCompile("^/css/(?P<fileName>.+\\.css)$")
-    server.Get(cssRegex, getCssFile)
+    cssRegex := service.GetRouteBuilder().AppendPart("css").AppendPart("(?P<fileName>.+\\.css)")
+    server.Get(cssRegex.MustCompile(), getCssFile)
 
-    jsRegex := regexp.MustCompile("^/js/(?P<fileName>.+\\.js)$")
-    server.Get(jsRegex, getJsFile)
+    jsRegex := service.GetRouteBuilder().AppendPart("js").AppendPart("(?P<fileName>.+\\.js)")
+    server.Get(jsRegex.MustCompile(), getJsFile)
 
     server.Get("/favicon.ico", getFavicon)
 }

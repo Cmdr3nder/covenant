@@ -9,9 +9,18 @@ import (
 )
 
 func RegisterResumeController(server service.Server) {
-    server.Get("/resume", getResumeRoot)
-    server.Get("/resume/detail", getResumeDetails)
-    server.Get("/resume/project", getResumeProjects)
+    path := service.GetRouteBuilder()
+
+    path.AppendPart("resume")
+    server.Get(path.MustCompile(), getResumeRoot)
+
+    detail := path.Fork()
+    detail.AppendPart("detail")
+    server.Get(detail.MustCompile(), getResumeDetails)
+
+    project := path.Fork()
+    project.AppendPart("project")
+    server.Get(project.MustCompile(), getResumeProjects)
 }
 
 func getResumeRoot(c model.Context, w http.ResponseWriter, r *http.Request) {

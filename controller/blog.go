@@ -1,8 +1,6 @@
 package controller
 
 import (
-    "bytes"
-    "regexp"
     "net/http"
     "fmt"
 
@@ -11,20 +9,19 @@ import (
 )
 
 func RegisterBlogController(server service.Server) {
-    path := bytes.Buffer{}
-    end := "/?$"
+    path := service.GetRouteBuilder()
 
-    path.WriteString("^/blog")
-    server.Get(regexp.MustCompile(path.String() + end), getBlogRoot)
+    path.AppendPart("blog")
+    server.Get(path.MustCompile(), getBlogRoot)
 
-    path.WriteString("/(?P<year>(19|20)[0-9]{2})")
-    server.Get(regexp.MustCompile(path.String() + end), getBlogYear)
+    path.AppendPart("(?P<year>(19|20)[0-9]{2})")
+    server.Get(path.MustCompile(), getBlogYear)
 
-    path.WriteString("/(?P<month>(0[1-9])|(1[1-2]))")
-    server.Get(regexp.MustCompile(path.String() + end), getBlogMonth)
+    path.AppendPart("(?P<month>(0[1-9])|(1[1-2]))")
+    server.Get(path.MustCompile(), getBlogMonth)
 
-    path.WriteString("/(?P<guid>([0-9]|[a-z]|[A-Z]|-|_)+)")
-    server.Get(regexp.MustCompile(path.String() + end), getBlogPost)
+    path.AppendPart("(?P<guid>([0-9]|[a-z]|[A-Z]|-|_)+)")
+    server.Get(path.MustCompile(), getBlogPost)
 }
 
 func getBlogRoot(c model.Context, w http.ResponseWriter, r *http.Request) {

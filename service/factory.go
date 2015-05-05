@@ -1,6 +1,8 @@
 package service
 
 import (
+    "bytes"
+
     "github.com/spf13/viper"
 )
 
@@ -13,4 +15,8 @@ func GetServer() Server {
 
 func GetConfig() Config {
     return config
+}
+
+func GetRouteBuilder() RouteBuilder {
+    return &goRouteBuilder{buffer: bytes.Buffer{}}
 }
