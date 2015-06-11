@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <title>{{.Title}}</title>
+        {{range $i, $file := .StyleSheets}}
+            <link rel="stylesheet" type="text/css" href="/css/{{$file}}" media="screen" />
+        {{end}}
+        {{range $i, $file := .Scripts}}
+            <script type="text/javascript" src="/js/{{$file}}"></script>
+        {{end}}
+    </head>
+    <body>
+        {{.Body}}
+    </body>
+</html>

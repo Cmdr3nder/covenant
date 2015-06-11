@@ -29,8 +29,22 @@ func main() {
 }
 
 func setupViewConfigDefaults(config service.Config) {
-	config.SetDefault("views_root", "./view")
-	config.SetDefault("views_shared", config.GetString("views_root")+"/shared")
-	config.SetDefault("views_index", config.GetString("views_shared")+"/index.html")
-	fmt.Printf("Views Index: %s\n", config.GetString("views_index"))
+	config.SetDefault("views", "./view")
+
+	setupSharedViewsConfig(config)
+	setupRootViewsConfig(config)
+
+	fmt.Printf("Views root: %s\n", config.GetString("debug"))
+}
+
+func setupSharedViewsConfig(config service.Config) {
+	config.SetDefault("views_shared", config.GetString("views")+"/shared")
+
+	config.SetDefault("views_shared_layout", config.GetString("views_shared")+"/layout.html")
+}
+
+func setupRootViewsConfig(config service.Config) {
+	config.SetDefault("views_root", config.GetString("views")+"/root")
+
+	config.SetDefault("views_root_index", config.GetString("views_root")+"/index.html")
 }
