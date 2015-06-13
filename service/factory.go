@@ -7,6 +7,7 @@ import (
 
 	"github.com/ender4021/covenant/service/layout"
 	"github.com/ender4021/covenant/service/layout/master"
+	"github.com/ender4021/covenant/service/util"
 	"github.com/spf13/viper"
 )
 
@@ -40,8 +41,32 @@ func GetLayout(configPath string) layout.Layout {
 			panic(fmt.Errorf("Could not read template: %s \n", err))
 		}
 
-		layoutMap[configPath] = master.New(t)
+		layoutMap[configPath] = master.New(t, readStyleSheets(layoutPath), readScripts(layoutPath))
 	}
 
 	return layoutMap[configPath]
+}
+
+func readScripts(layoutPath string) []template.HTMLAttr {
+	return readExtras(layoutPath + ".scripts")
+}
+
+func readStyleSheets(layoutPath string) []template.HTMLAttr {
+	return readExtras(layoutPath + ".styles")
+}
+
+func readExtras(extrasPath string) []template.HTMLAttr {
+	lines, err := util.ReadFileAsLines(extrasPath)
+	var attrs []template.HTMLAttr
+
+	if err == nil {
+		for _, line := range lines {
+			attrs = append(attrs, template.HTMLAttr(line))
+		}
+		fmt.Printf("Read %s \n", extrasPath)
+	} else {
+		fmt.Printf("Warning: Couldn't Read %s\n", extrasPath)
+	}
+
+	return attrs
 }

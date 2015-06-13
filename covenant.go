@@ -33,8 +33,6 @@ func setupViewConfigDefaults(config service.Config) {
 
 	setupSharedViewsConfig(config)
 	setupRootViewsConfig(config)
-
-	fmt.Printf("Views root: %s\n", config.GetString("debug"))
 }
 
 func setupSharedViewsConfig(config service.Config) {
