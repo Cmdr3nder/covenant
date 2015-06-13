@@ -32,7 +32,7 @@ func GetRouteBuilder() RouteBuilder {
 
 // GetLayout returns a new layout for the given path or the same instance if previously called
 func GetLayout(configPath string) layout.Layout {
-	if layoutMap[configPath] == nil {
+	if layoutMap[configPath] == nil || config.GetBool("debug") {
 		layoutPath := config.GetString(configPath)
 
 		t, err := template.ParseFiles(layoutPath)
@@ -63,9 +63,6 @@ func readExtras(extrasPath string) []template.HTMLAttr {
 		for _, line := range lines {
 			attrs = append(attrs, template.HTMLAttr(line))
 		}
-		fmt.Printf("Read %s \n", extrasPath)
-	} else {
-		fmt.Printf("Warning: Couldn't Read %s\n", extrasPath)
 	}
 
 	return attrs
