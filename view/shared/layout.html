@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>{{.Title}}</title>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         {{range $i, $file := .StyleSheets}}
             <link rel="stylesheet" type="text/css" href="{{$file}}" media="screen" />
         {{end}}
