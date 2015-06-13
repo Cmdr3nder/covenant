@@ -9,6 +9,22 @@
         {{end}}
     </head>
     <body>
-        {{.Body}}
+        <header>
+            Andrew Bowers
+            <nav>
+                <ul>
+                    <!--<li><a href="/work">Work</a></li>-->
+                    <!--<li>Play</li>-->
+                    <li><a href="/blog">Blog</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div>
+            {{.Body}}
+        </div>
+        <footer>
+            <p>&copy; 2014-2015 Andrew Bowers</p>
+            <p>Code for and embedded in this website is released under the <a href="http://ender.mit-license.org">MIT license</a> except where otherwise noted.</p>
+        </footer>
     </body>
 </html>
