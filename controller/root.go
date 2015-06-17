@@ -16,7 +16,7 @@ func RegisterRootController(server service.Server, config service.Config) {
 func welcomePage(c model.Context, w http.ResponseWriter, r *http.Request) {
 	l := then.New(service.GetLayout("views_root_index"), service.GetLayout("views_shared_layout"))
 
-	page := model.Page{Title: "This Is The Title", Body: "This is the Body and it", Data: "doesn't have to be a string."}
+	page := model.Page{Title: "Andrew Bowers", Body: "This is the Body and it", Data: "doesn't have to be a string."}
 
 	err := l.Render(w, page)
 
