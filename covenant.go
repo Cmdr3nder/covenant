@@ -22,7 +22,7 @@ func main() {
 	//Register Controllers
 	controller.RegisterRootController(server, config)
 	controller.RegisterBlogController(server)
-	controller.RegisterResumeController(server)
+	controller.RegisterWorkController(server)
 	controller.RegisterStaticFileController(server, config)
 
 	server.Serve()
@@ -33,6 +33,7 @@ func setupViewConfigDefaults(config service.Config) {
 
 	setupSharedViewsConfig(config)
 	setupRootViewsConfig(config)
+	setupBlogViewsConfig(config)
 
 	config.SetDefault("media", "./media")
 	config.SetDefault("css", config.GetString("media")+"/css")
@@ -51,4 +52,10 @@ func setupRootViewsConfig(config service.Config) {
 	config.SetDefault("views_root", config.GetString("views")+"/root")
 
 	config.SetDefault("views_root_index", config.GetString("views_root")+"/index.html")
+}
+
+func setupBlogViewsConfig(config service.Config) {
+	config.SetDefault("views_blog", config.GetString("views")+"/blog")
+
+	config.SetDefault("views_blog_layout", config.GetString("views_blog")+"/layout.html")
 }

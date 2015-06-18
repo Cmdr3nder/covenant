@@ -47,6 +47,11 @@ func GetLayout(configPath string) layout.Layout {
 	return layoutMap[configPath]
 }
 
+// GetRootLayout returns a layout object for the primary layout file
+func GetRootLayout() layout.Layout {
+	return GetLayout("views_shared_layout")
+}
+
 func readScripts(layoutPath string) []template.HTMLAttr {
 	return readExtras(layoutPath + ".scripts")
 }

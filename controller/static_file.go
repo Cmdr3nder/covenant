@@ -20,44 +20,46 @@ func RegisterStaticFileController(server service.Server, config service.Config) 
 	server.Get("/favicon.ico", getFavicon(config))
 }
 
-func getCSSFile(config service.Config) func(model.Context, http.ResponseWriter, *http.Request) {
+func getCSSFile(config service.Config) func(model.Context, http.ResponseWriter, *http.Request) error {
 	cssDir := config.GetString("css")
 
-	return func(c model.Context, w http.ResponseWriter, r *http.Request) {
-		sendFile(w, "text/css", cssDir+"/"+c.GetURLParam("fileName"), config.GetBool("debug"))
+	return func(c model.Context, w http.ResponseWriter, r *http.Request) error {
+		return sendFile(w, "text/css", cssDir+"/"+c.GetURLParam("fileName"), config.GetBool("debug"))
 	}
 }
 
-func getJavaScriptFile(config service.Config) func(model.Context, http.ResponseWriter, *http.Request) {
+func getJavaScriptFile(config service.Config) func(model.Context, http.ResponseWriter, *http.Request) error {
 	jsDir := config.GetString("js")
 
-	return func(c model.Context, w http.ResponseWriter, r *http.Request) {
-		sendFile(w, "application/javascript", jsDir+"/"+c.GetURLParam("fileName"), config.GetBool("debug"))
+	return func(c model.Context, w http.ResponseWriter, r *http.Request) error {
+		return sendFile(w, "application/javascript", jsDir+"/"+c.GetURLParam("fileName"), config.GetBool("debug"))
 	}
 }
 
-func getFavicon(config service.Config) func(model.Context, http.ResponseWriter, *http.Request) {
+func getFavicon(config service.Config) func(model.Context, http.ResponseWriter, *http.Request) error {
 	faviconPath := config.GetString("favicon")
 
-	return func(c model.Context, w http.ResponseWriter, r *http.Request) {
-		sendFile(w, "image/x-icon", faviconPath, config.GetBool("debug"))
+	return func(c model.Context, w http.ResponseWriter, r *http.Request) error {
+		return sendFile(w, "image/x-icon", faviconPath, config.GetBool("debug"))
 	}
 }
 
-func sendFile(w http.ResponseWriter, contentType string, path string, debug bool) {
+func sendFile(w http.ResponseWriter, contentType string, path string, debug bool) error {
 	w.Header().Set("Content-type", contentType)
 
 	fileBytes, err := getFile(path, debug)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return err
 	}
 
 	buffer := bytes.NewBuffer(fileBytes)
 
 	if _, err := buffer.WriteTo(w); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return err
 	}
+
+	return nil
 }
 
 var files = make(map[string][]byte)

@@ -11,15 +11,19 @@ import (
 
 // Server is the interface for an http server based on our Context interface
 type Server interface {
-	Get(interface{}, func(model.Context, http.ResponseWriter, *http.Request))
+	Get(interface{}, func(model.Context, http.ResponseWriter, *http.Request) error)
 	Serve()
 }
 
 type gojiServer struct{}
 
-func (s *gojiServer) Get(pattern interface{}, fn func(model.Context, http.ResponseWriter, *http.Request)) {
+func (s *gojiServer) Get(pattern interface{}, fn func(model.Context, http.ResponseWriter, *http.Request) error) {
 	goji.Get(pattern, func(c web.C, w http.ResponseWriter, r *http.Request) {
-		fn(model.GetContext(c), w, r)
+		err := fn(model.GetContext(c), w, r)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	})
 }
 

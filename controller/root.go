@@ -13,14 +13,10 @@ func RegisterRootController(server service.Server, config service.Config) {
 	server.Get("/", welcomePage)
 }
 
-func welcomePage(c model.Context, w http.ResponseWriter, r *http.Request) {
+func welcomePage(c model.Context, w http.ResponseWriter, r *http.Request) error {
 	l := then.New(service.GetLayout("views_root_index"), service.GetLayout("views_shared_layout"))
 
-	page := model.Page{Title: "Andrew Bowers", Body: "This is the Body and it", Data: "doesn't have to be a string."}
+	page := model.Page{Title: "Andrew Bowers"}
 
-	err := l.Render(w, page)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	return l.Render(w, page)
 }
