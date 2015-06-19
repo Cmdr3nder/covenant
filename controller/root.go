@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/ender4021/covenant/model"
+	"github.com/ender4021/covenant/model/page"
 	"github.com/ender4021/covenant/service"
 	"github.com/ender4021/covenant/service/config"
 	"github.com/ender4021/covenant/service/layout"
@@ -39,7 +40,7 @@ func welcomePage(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	page := model.Page{Title: "Andrew Bowers"}
+	page := page.Page{Title: "Andrew Bowers"}
 
 	return l.Render(w, page)
 }

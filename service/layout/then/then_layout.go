@@ -3,7 +3,7 @@ package then
 import (
 	"io"
 
-	"github.com/ender4021/covenant/model"
+	"github.com/ender4021/covenant/model/page"
 	"github.com/ender4021/covenant/service/layout"
 )
 
@@ -17,7 +17,7 @@ type thenLayout struct {
 	second layout.Layout
 }
 
-func (l *thenLayout) Render(w io.Writer, p model.Page) error {
+func (l *thenLayout) Render(w io.Writer, p page.Page) error {
 	p, err := l.first.RenderStep(p)
 
 	if err != nil {
@@ -27,7 +27,7 @@ func (l *thenLayout) Render(w io.Writer, p model.Page) error {
 	return l.second.Render(w, p)
 }
 
-func (l *thenLayout) RenderStep(p model.Page) (model.Page, error) {
+func (l *thenLayout) RenderStep(p page.Page) (page.Page, error) {
 	p, err := l.first.RenderStep(p)
 
 	if err != nil {

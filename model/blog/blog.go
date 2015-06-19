@@ -1,6 +1,6 @@
-package model
+package blog
 
 // Blog is the context information for the blog
 type Blog struct {
-	RecentPosts []BlogPost
+	RecentPosts []Post
 }

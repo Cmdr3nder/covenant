@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/ender4021/covenant/model"
+	"github.com/ender4021/covenant/model/page"
 	"github.com/ender4021/covenant/service"
 	"github.com/ender4021/covenant/service/layout"
 	"github.com/ender4021/covenant/service/layout/then"
@@ -52,7 +53,7 @@ func getBlogRoot(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	page := model.Page{Title: "Andrew Bowers: Blog", Body: "Blog Root", Data: model.GetBlog()}
+	page := page.Page{Title: "Andrew Bowers: Blog", Body: "Blog Root", Data: model.GetBlog()}
 
 	return l.Render(w, page)
 }
@@ -64,7 +65,7 @@ func getBlogYear(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	page := model.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Year: %s", c.GetURLParam("year"))), Data: model.GetBlog()}
+	page := page.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Year: %s", c.GetURLParam("year"))), Data: model.GetBlog()}
 
 	return l.Render(w, page)
 }
@@ -76,7 +77,7 @@ func getBlogMonth(c model.Context, w http.ResponseWriter, r *http.Request) error
 		return err
 	}
 
-	page := model.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Month: %s %s", c.GetURLParam("year"), c.GetURLParam("month"))), Data: model.GetBlog()}
+	page := page.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Month: %s %s", c.GetURLParam("year"), c.GetURLParam("month"))), Data: model.GetBlog()}
 
 	return l.Render(w, page)
 }
@@ -88,7 +89,7 @@ func getBlogPost(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	page := model.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Post: %s %s %s", c.GetURLParam("year"), c.GetURLParam("month"), c.GetURLParam("guid"))), Data: model.GetBlog()}
+	page := page.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Post: %s %s %s", c.GetURLParam("year"), c.GetURLParam("month"), c.GetURLParam("guid"))), Data: model.GetBlog()}
 
 	return l.Render(w, page)
 }

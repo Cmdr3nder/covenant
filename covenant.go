@@ -59,4 +59,5 @@ func setupBlogViewsConfig(config config.Config) {
 	config.SetDefault("views_blog", config.GetString("views")+"/blog")
 
 	config.SetDefault("views_blog_layout", config.GetString("views_blog")+"/layout.html")
+	config.SetDefault("views_blog_video", config.GetString("views_blog")+"/video.html")
 }
