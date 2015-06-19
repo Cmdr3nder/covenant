@@ -7,10 +7,11 @@ import (
 
 	"github.com/ender4021/covenant/model"
 	"github.com/ender4021/covenant/service"
+	"github.com/ender4021/covenant/service/config"
 )
 
 // RegisterStaticFileController adds routes and initializes constants for routes controlled by the "Resume" controller
-func RegisterStaticFileController(server service.Server, config service.Config) {
+func RegisterStaticFileController(server service.Server, config config.Config) {
 	cssRegex := service.GetRouteBuilder().AppendPart("css").AppendPart("(?P<fileName>.+\\.css)")
 	server.Get(cssRegex.MustCompile(), getCSSFile(config))
 
@@ -20,7 +21,7 @@ func RegisterStaticFileController(server service.Server, config service.Config) 
 	server.Get("/favicon.ico", getFavicon(config))
 }
 
-func getCSSFile(config service.Config) func(model.Context, http.ResponseWriter, *http.Request) error {
+func getCSSFile(config config.Config) func(model.Context, http.ResponseWriter, *http.Request) error {
 	cssDir := config.GetString("css")
 
 	return func(c model.Context, w http.ResponseWriter, r *http.Request) error {
@@ -28,7 +29,7 @@ func getCSSFile(config service.Config) func(model.Context, http.ResponseWriter, 
 	}
 }
 
-func getJavaScriptFile(config service.Config) func(model.Context, http.ResponseWriter, *http.Request) error {
+func getJavaScriptFile(config config.Config) func(model.Context, http.ResponseWriter, *http.Request) error {
 	jsDir := config.GetString("js")
 
 	return func(c model.Context, w http.ResponseWriter, r *http.Request) error {
@@ -36,7 +37,7 @@ func getJavaScriptFile(config service.Config) func(model.Context, http.ResponseW
 	}
 }
 
-func getFavicon(config service.Config) func(model.Context, http.ResponseWriter, *http.Request) error {
+func getFavicon(config config.Config) func(model.Context, http.ResponseWriter, *http.Request) error {
 	faviconPath := config.GetString("favicon")
 
 	return func(c model.Context, w http.ResponseWriter, r *http.Request) error {

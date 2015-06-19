@@ -5,6 +5,7 @@ import (
 
 	"github.com/ender4021/covenant/controller"
 	"github.com/ender4021/covenant/service"
+	"github.com/ender4021/covenant/service/config"
 )
 
 func main() {
@@ -28,7 +29,7 @@ func main() {
 	server.Serve()
 }
 
-func setupViewConfigDefaults(config service.Config) {
+func setupViewConfigDefaults(config config.Config) {
 	config.SetDefault("views", "./view")
 
 	setupSharedViewsConfig(config)
@@ -42,19 +43,19 @@ func setupViewConfigDefaults(config service.Config) {
 	config.SetDefault("favicon", config.GetString("img")+"/favicon.ico")
 }
 
-func setupSharedViewsConfig(config service.Config) {
+func setupSharedViewsConfig(config config.Config) {
 	config.SetDefault("views_shared", config.GetString("views")+"/shared")
 
 	config.SetDefault("views_shared_layout", config.GetString("views_shared")+"/layout.html")
 }
 
-func setupRootViewsConfig(config service.Config) {
+func setupRootViewsConfig(config config.Config) {
 	config.SetDefault("views_root", config.GetString("views")+"/root")
 
 	config.SetDefault("views_root_index", config.GetString("views_root")+"/index.html")
 }
 
-func setupBlogViewsConfig(config service.Config) {
+func setupBlogViewsConfig(config config.Config) {
 	config.SetDefault("views_blog", config.GetString("views")+"/blog")
 
 	config.SetDefault("views_blog_layout", config.GetString("views_blog")+"/layout.html")

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 
+	"github.com/ender4021/covenant/service/config"
 	"github.com/ender4021/covenant/service/layout"
 	"github.com/ender4021/covenant/service/layout/master"
 	"github.com/ender4021/covenant/service/util"
@@ -12,7 +13,7 @@ import (
 )
 
 var server = &gojiServer{}
-var config = viper.New()
+var vConfig = viper.New()
 var layoutMap = make(map[string]layout.Layout)
 
 // GetServer returns the single instance of Server
@@ -21,8 +22,8 @@ func GetServer() Server {
 }
 
 // GetConfig returns the single instance of Config
-func GetConfig() Config {
-	return config
+func GetConfig() config.Config {
+	return vConfig
 }
 
 // GetRouteBuilder returns a new RouteBuilder
@@ -32,8 +33,8 @@ func GetRouteBuilder() RouteBuilder {
 
 // GetLayout returns a new layout for the given path or the same instance if previously called
 func GetLayout(configPath string) layout.Layout {
-	if layoutMap[configPath] == nil || config.GetBool("debug") {
-		layoutPath := config.GetString(configPath)
+	if layoutMap[configPath] == nil || vConfig.GetBool("debug") {
+		layoutPath := vConfig.GetString(configPath)
 
 		t, err := template.ParseFiles(layoutPath)
 
