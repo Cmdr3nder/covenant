@@ -23,7 +23,7 @@ func RegisterBlogController(server server.Server) {
 	path.AppendPart("(?P<year>(19|20)[0-9]{2})")
 	server.Get(path.MustCompile(), getBlogYear)
 
-	path.AppendPart("(?P<month>(0[1-9])|(1[1-2]))")
+	path.AppendPart("(?P<month>(0[1-9])|(1[0-2]))")
 	server.Get(path.MustCompile(), getBlogMonth)
 
 	path.AppendPart("(?P<guid>([0-9]|[a-z]|[A-Z]|-|_)+)")
