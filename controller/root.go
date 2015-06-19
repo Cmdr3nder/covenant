@@ -7,10 +7,11 @@ import (
 	"github.com/ender4021/covenant/service"
 	"github.com/ender4021/covenant/service/config"
 	"github.com/ender4021/covenant/service/layout/then"
+	"github.com/ender4021/covenant/service/server"
 )
 
 // RegisterRootController add the "/" route and initializes constants for routes controlled by the "Root" controller
-func RegisterRootController(server service.Server, config config.Config) {
+func RegisterRootController(server server.Server, config config.Config) {
 	server.Get("/", welcomePage)
 }
 

@@ -6,10 +6,11 @@ import (
 
 	"github.com/ender4021/covenant/model"
 	"github.com/ender4021/covenant/service"
+	"github.com/ender4021/covenant/service/server"
 )
 
 // RegisterWorkController adds routes and initializes constants for routes controlled by the "Work" controller
-func RegisterWorkController(server service.Server) {
+func RegisterWorkController(server server.Server) {
 	path := service.GetRouteBuilder()
 
 	path.AppendPart("work")

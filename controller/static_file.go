@@ -8,10 +8,11 @@ import (
 	"github.com/ender4021/covenant/model"
 	"github.com/ender4021/covenant/service"
 	"github.com/ender4021/covenant/service/config"
+	"github.com/ender4021/covenant/service/server"
 )
 
 // RegisterStaticFileController adds routes and initializes constants for routes controlled by the "Resume" controller
-func RegisterStaticFileController(server service.Server, config config.Config) {
+func RegisterStaticFileController(server server.Server, config config.Config) {
 	cssRegex := service.GetRouteBuilder().AppendPart("css").AppendPart("(?P<fileName>.+\\.css)")
 	server.Get(cssRegex.MustCompile(), getCSSFile(config))
 

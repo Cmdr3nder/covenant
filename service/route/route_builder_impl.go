@@ -1,18 +1,9 @@
-package service
+package route
 
 import (
 	"bytes"
 	"regexp"
 )
-
-// RouteBuilder is a Regexp builder for servable URL routes.
-type RouteBuilder interface {
-	Append(string) RouteBuilder
-	AppendPart(string) RouteBuilder
-	Fork() RouteBuilder
-	MustCompile() *regexp.Regexp
-	Compile() (*regexp.Regexp, error)
-}
 
 type goRouteBuilder struct {
 	buffer bytes.Buffer
@@ -21,18 +12,23 @@ type goRouteBuilder struct {
 var start = "^"
 var end = "/?$"
 
-func (b *goRouteBuilder) Append(s string) RouteBuilder {
+// NewBuilder creates a new goRouteBuilder
+func NewBuilder() Builder {
+	return &goRouteBuilder{buffer: bytes.Buffer{}}
+}
+
+func (b *goRouteBuilder) Append(s string) Builder {
 	b.buffer.WriteString(s)
 	return b
 }
 
-func (b *goRouteBuilder) AppendPart(s string) RouteBuilder {
+func (b *goRouteBuilder) AppendPart(s string) Builder {
 	b.Append("/")
 	b.Append(s)
 	return b
 }
 
-func (b *goRouteBuilder) Fork() RouteBuilder {
+func (b *goRouteBuilder) Fork() Builder {
 	nRouteBuilder := &goRouteBuilder{buffer: bytes.Buffer{}}
 	nRouteBuilder.Append(b.buffer.String())
 	return nRouteBuilder

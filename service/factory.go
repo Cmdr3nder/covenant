@@ -1,24 +1,25 @@
 package service
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
 
 	"github.com/ender4021/covenant/service/config"
 	"github.com/ender4021/covenant/service/layout"
 	"github.com/ender4021/covenant/service/layout/master"
+	"github.com/ender4021/covenant/service/route"
+	"github.com/ender4021/covenant/service/server"
 	"github.com/ender4021/covenant/service/util"
 	"github.com/spf13/viper"
 )
 
-var server = &gojiServer{}
+var gServer = server.NewGoji()
 var vConfig = viper.New()
 var layoutMap = make(map[string]layout.Layout)
 
 // GetServer returns the single instance of Server
-func GetServer() Server {
-	return server
+func GetServer() server.Server {
+	return gServer
 }
 
 // GetConfig returns the single instance of Config
@@ -26,9 +27,9 @@ func GetConfig() config.Config {
 	return vConfig
 }
 
-// GetRouteBuilder returns a new RouteBuilder
-func GetRouteBuilder() RouteBuilder {
-	return &goRouteBuilder{buffer: bytes.Buffer{}}
+// GetRouteBuilder returns a new route.Builder
+func GetRouteBuilder() route.Builder {
+	return route.NewBuilder()
 }
 
 // GetLayout returns a new layout for the given path or the same instance if previously called

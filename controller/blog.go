@@ -8,10 +8,11 @@ import (
 	"github.com/ender4021/covenant/model"
 	"github.com/ender4021/covenant/service"
 	"github.com/ender4021/covenant/service/layout/then"
+	"github.com/ender4021/covenant/service/server"
 )
 
 // RegisterBlogController adds routes and initializes constants for routes controlled by the "Blog" controller
-func RegisterBlogController(server service.Server) {
+func RegisterBlogController(server server.Server) {
 	path := service.GetRouteBuilder()
 
 	path.AppendPart("blog")
