@@ -53,7 +53,20 @@ func getBlogRoot(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	page := page.Page{Title: "Andrew Bowers: Blog", Body: "Blog Root", Data: model.GetBlog()}
+	archiveLayout, err := service.GetLayout("views_blog_archive")
+
+	if err != nil {
+		return err
+	}
+
+	page, err := archiveLayout.RenderStep(page.Page{Data: model.AllPostYears()})
+
+	if err != nil {
+		return err
+	}
+
+	page.Title = "Andrew Bowers: Blog"
+	page.Data = model.GetBlog()
 
 	return l.Render(w, page)
 }
