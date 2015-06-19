@@ -89,7 +89,24 @@ func getBlogPost(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	page := page.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Post: %s %s %s", c.GetURLParam("year"), c.GetURLParam("month"), c.GetURLParam("guid"))), Data: model.GetBlog()}
+	post := model.GetPost(c.GetURLParam("guid"))
+
+	//verify year and month match c.GetURLParam("year"), c.GetURLParam("month")
+
+	postLayout, err := service.GetLayout(post.LayoutID())
+
+	if err != nil {
+		return err
+	}
+
+	page, err := postLayout.RenderStep(post.AsPage())
+
+	if err != nil {
+		return err
+	}
+
+	page.Title = "Andrew Bowers: Blog"
+	page.Data = model.GetBlog()
 
 	return l.Render(w, page)
 }

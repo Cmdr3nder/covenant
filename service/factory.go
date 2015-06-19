@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"html/template"
 	"path/filepath"
 	"strings"
@@ -44,7 +43,6 @@ func GetLayout(configPath string) (layout.Layout, error) {
 	if layoutMap[configPath] == nil || vConfig.GetBool("debug") {
 		layoutPath := vConfig.GetString(configPath)
 
-		fmt.Printf("%v\n with %+v\n at %v\n", configPath, funcMap, layoutPath)
 		t, err := template.New(filepath.Base(layoutPath)).Funcs(funcMap).ParseFiles(layoutPath)
 
 		if err != nil {

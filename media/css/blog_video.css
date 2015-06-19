@@ -1,0 +1,40 @@
+.videoPost {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-height: 100%;
+}
+
+.videoPost .video iframe {
+    width: 16rem;
+    height: 9rem;
+}
+
+@media only screen and (min-device-width: 800px) {
+    .videoPost .video iframe {
+        width: 32rem;
+        height: 18rem;
+    }
+}
+
+@media only screen and (min-device-width: 1060px) {
+    .videoPost .video iframe {
+        width: 48rem;
+        height: 27rem;
+    }
+}
+
+.postTitle h1 {
+    font-size: 1.5em;
+}
+
+.videoPost .video {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 1em 0 1em 0;
+}

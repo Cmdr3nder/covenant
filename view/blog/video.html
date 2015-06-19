@@ -1,10 +1,13 @@
 <div class="videoPost">
-    <h1>{{.Title}}</h1>
-    {{if .Data.IsYouTube}}
-    <iframe class="video youtube" width="560" height="315" src="https://www.youtube.com/embed/{{.Data.VideoID}}" frameborder="0" allowfullscreen></iframe>
-    {{end}}
-
-    <div class="comment">
-        {{.Body}}
+    <header class="postTitle">
+        <h1>{{.Title}}</h1>
+    </header>
+    <div class="video">
+        {{if .Data.IsYouTube}}
+        <iframe src="https://www.youtube.com/embed/{{.Data.VideoID}}" frameborder="0" allowfullscreen></iframe>
+        {{end}}
     </div>
+    <footer class="comment">
+        {{.Body}}
+    </footer>
 </div>

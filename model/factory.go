@@ -16,3 +16,8 @@ func GetBlog() blog.Blog {
 	posts = append(posts, &blog.VideoPost{})
 	return blog.Blog{RecentPosts: posts}
 }
+
+// GetPost constructs a complete post entry for the given uuid or an unfound post entry if uuid was unrecognized
+func GetPost(uuid string) blog.Post {
+	return &blog.VideoPost{}
+}
