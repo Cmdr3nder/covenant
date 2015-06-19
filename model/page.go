@@ -20,7 +20,7 @@ func (p *Page) ReduceLinkedFiles() {
 }
 
 func reduce(items []template.HTMLAttr) []template.HTMLAttr {
-	var nItemsMap map[template.HTMLAttr]bool
+	nItemsMap := make(map[template.HTMLAttr]bool)
 	var nItemsSlice []template.HTMLAttr
 
 	for _, item := range items {
