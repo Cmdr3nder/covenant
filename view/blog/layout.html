@@ -4,7 +4,7 @@
 <nav class="blogNavigation">
     <h1>Recent Posts</h1>
     {{range $i, $post := .Data.RecentPosts}}
-        <a href="/blog/{{$post.Date.Year}}/{{$post.Date.Month}}/{{$post.Uuid}}">{{$post.Title}}</a>
+        <a href="/blog/{{$post.Date.Year}}/{{$post.Date.Month | MonthAsInt}}/{{$post.UUID}}" class="blogPost">{{$post.Title}}</a>
     {{end}}
     <a href="/blog">Archive</a>
 </nav>

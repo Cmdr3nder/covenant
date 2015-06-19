@@ -3,6 +3,8 @@ package service
 import (
 	"fmt"
 	"html/template"
+	"path/filepath"
+	"strings"
 
 	"github.com/ender4021/covenant/service/config"
 	"github.com/ender4021/covenant/service/layout"
@@ -32,25 +34,31 @@ func GetRouteBuilder() route.Builder {
 	return route.NewBuilder()
 }
 
+var funcMap = template.FuncMap{
+	"ToLower":    strings.ToLower,
+	"MonthAsInt": util.MonthAsInt,
+}
+
 // GetLayout returns a new layout for the given path or the same instance if previously called
-func GetLayout(configPath string) layout.Layout {
+func GetLayout(configPath string) (layout.Layout, error) {
 	if layoutMap[configPath] == nil || vConfig.GetBool("debug") {
 		layoutPath := vConfig.GetString(configPath)
 
-		t, err := template.ParseFiles(layoutPath)
+		fmt.Printf("%v\n with %+v\n at %v\n", configPath, funcMap, layoutPath)
+		t, err := template.New(filepath.Base(layoutPath)).Funcs(funcMap).ParseFiles(layoutPath)
 
 		if err != nil {
-			panic(fmt.Errorf("Could not read template: %s \n", err))
+			return layoutMap[configPath], err
 		}
 
 		layoutMap[configPath] = master.New(t, readStyleSheets(layoutPath), readScripts(layoutPath))
 	}
 
-	return layoutMap[configPath]
+	return layoutMap[configPath], nil
 }
 
 // GetRootLayout returns a layout object for the primary layout file
-func GetRootLayout() layout.Layout {
+func GetRootLayout() (layout.Layout, error) {
 	return GetLayout("views_shared_layout")
 }
 

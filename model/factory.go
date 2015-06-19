@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"github.com/zenazn/goji/web"
 )
 
@@ -11,5 +13,7 @@ func GetContext(c web.C) Context {
 
 // GetBlog constructs a new Blog context if not yet created, otherwise it returns the current blog context
 func GetBlog() Blog {
-	return Blog{}
+	var posts []BlogPost
+	posts = append(posts, NewBlogPost(time.Now(), "simple-uuid", "title string"))
+	return Blog{RecentPosts: posts}
 }

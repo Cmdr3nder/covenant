@@ -22,3 +22,7 @@
 .blogNavigation h1 {
     font-size: 1.5em;
 }
+
+a.blogPost {
+    display: block;
+}
