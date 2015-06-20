@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/ender4021/covenant/model"
 	"github.com/ender4021/covenant/model/page"
@@ -71,6 +73,12 @@ func getBlogRoot(c model.Context, w http.ResponseWriter, r *http.Request) error 
 	return l.Render(w, page)
 }
 
+type blogYearView struct {
+	Months  []time.Month
+	Year    int
+	IsValid bool
+}
+
 func getBlogYear(c model.Context, w http.ResponseWriter, r *http.Request) error {
 	l, err := getCombinedBlogLayout()
 
@@ -78,7 +86,28 @@ func getBlogYear(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	page := page.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Year: %s", c.GetURLParam("year"))), Data: model.GetBlog()}
+	yearLayout, err := service.GetLayout("views_blog_year")
+
+	if err != nil {
+		return err
+	}
+
+	year, err := strconv.Atoi(c.GetURLParam("year"))
+
+	if err != nil {
+		return err
+	}
+
+	months := model.MonthsForYear(year)
+
+	page, err := yearLayout.RenderStep(page.Page{Data: blogYearView{Year: year, Months: months, IsValid: len(months) > 0}})
+
+	if err != nil {
+		return err
+	}
+
+	page.Title = "Andrew Bowers: Blog"
+	page.Data = model.GetBlog()
 
 	return l.Render(w, page)
 }

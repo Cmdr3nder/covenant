@@ -1,0 +1,27 @@
+.blogArchive {
+    min-height: 100%;
+}
+
+.months {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.months > .blogMonth {
+    padding: 2em;
+    margin: 1em;
+    min-width: 9em;
+
+    /*Rounded Borders*/
+    border-width: 0;
+    border-radius: 4px;
+    border-color: transparent;
+}
+
+.months > .blogMonth:nth-child(even) {
+    background-color: #303030;
+}
+
+.months > .blogMonth:nth-child(odd) {
+    background-color: #404040;
+}

@@ -1,5 +1,10 @@
-<div class="blogYears">
-    {{range $i, $year := .Data}}
-        <a href="/blog/{{$year}}" class="blogYear">{{$year}}</a>
-    {{end}}
+<div class="blogArchive">
+    <header class="blogHeader">
+        <h1>Blog Archive</h1>
+    </header>
+    <div class="blogYears">
+        {{range $i, $year := .Data}}
+            <a href="/blog/{{$year}}" class="blogYear">{{$year}}</a>
+        {{end}}
+    </div>
 </div>

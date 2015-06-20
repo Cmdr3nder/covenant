@@ -1,0 +1,16 @@
+<div class="blogYear">
+    <header class="blogHeader">
+        <h1>Blog {{.Data.Year}}</h1>
+    </header>
+    {{if .Data.IsValid}}
+        <div class="months">
+            {{range $i, $month := .Data.Months}}
+                <a href="/blog/{{$.Data.Year}}/{{$month | MonthAsInt}}" class="blogMonth">{{$month}}</a>
+            {{end}}
+        </div>
+    {{else}}
+        <div class="warning">
+            Sorry, there are no posts for this year.
+        </div>
+    {{end}}
+</div>

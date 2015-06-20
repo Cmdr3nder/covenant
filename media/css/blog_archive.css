@@ -1,0 +1,26 @@
+.blogArchive {
+    min-height: 100%;
+}
+
+.blogYears {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.blogYears > .blogYear {
+    padding: 2em;
+    margin: 1em;
+
+    /*Rounded Borders*/
+    border-width: 0;
+    border-radius: 4px;
+    border-color: transparent;
+}
+
+.blogYears > .blogYear:nth-child(even) {
+    background-color: #303030;
+}
+
+.blogYears > .blogYear:nth-child(odd) {
+    background-color: #404040;
+}

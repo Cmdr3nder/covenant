@@ -61,6 +61,27 @@ func AllPostYears() []int {
 	return years
 }
 
+// MonthsForYear returns a list of all months that have happened in the given year
+func MonthsForYear(year int) []time.Month {
+	if year >= time.Now().Year() {
+		var months []time.Month
+
+		if year == time.Now().Year() {
+			for month := time.January; month <= time.Now().Month(); month++ {
+				months = append(months, month)
+			}
+		}
+
+		return months
+	}
+
+	if 2013 > year {
+		return []time.Month{}
+	}
+
+	return []time.Month{time.January, time.February, time.March, time.April, time.May, time.June, time.July, time.August, time.September, time.October, time.November, time.December}
+}
+
 // GetBlog constructs a new Blog context if not yet created, otherwise it returns the current blog context
 func GetBlog() blog.Blog {
 	var posts []blog.Post
