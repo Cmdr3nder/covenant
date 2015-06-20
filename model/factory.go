@@ -1,6 +1,7 @@
 package model
 
 import (
+	"bytes"
 	"sort"
 	"time"
 
@@ -18,6 +19,7 @@ func newLocalDay(year int, month time.Month, day int) time.Time {
 }
 
 var allPosts = map[string]blog.Post{
+	"2cellos-the-trooper-overture":    blog.NewVideoPost(newLocalDay(2015, time.June, 20), "2cellos-the-trooper-overture", "2CELLOS - The Trooper Overture", "", "eVH1Y15omgE", true),
 	"2cellos-thunderstruck":           blog.NewVideoPost(newLocalDay(2014, time.June, 25), "2cellos-thunderstruck", "2CELLOS - Thunderstruck", "", "uT3SBzmDxGk", true),
 	"the-expert":                      blog.NewVideoPost(newLocalDay(2014, time.May, 05), "the-expert", "The Expert", "", "BKorP55Aqvg", true),
 	"the-emperor-voiced-by-the-joker": blog.NewVideoPost(newLocalDay(2014, time.February, 01), "the-emperor-voiced-by-the-joker", "The Emperor Voiced by Mark Hamill's Joker", "", "agcc7w8YmHo", true),
@@ -36,18 +38,6 @@ var allPosts = map[string]blog.Post{
 	"eve-online-origins":              blog.NewVideoPost(newLocalDay(2013, time.September, 4), "eve-online-origins", "Eve Online - Origins", "", "FZPCiqBLPM8", true),
 	"why-x-stands-for-unknown":        blog.NewVideoPost(newLocalDay(2013, time.September, 4), "why-x-stands-for-unknown", "Why is 'X' the unknown?", "", "yo7frsh6wtI", true),
 	"using-python-to-code-by-voice":   blog.NewVideoPost(newLocalDay(2013, time.September, 4), "using-python-to-code-by-voice", "Using Python to Code by Voice", "This is so cool. Hopefully he releases this tool soon so that when I go to do something similar I can just extend his solution instead of starting from scratch.", "8SkdfdXWYaI", true),
-}
-
-func allPostKeys() []string {
-	var postKeys []string
-
-	for k := range allPosts {
-		postKeys = append(postKeys, k)
-	}
-
-	sort.Strings(postKeys)
-
-	return postKeys
 }
 
 // AllPostYears returs a list of all years that have been posted in
@@ -82,13 +72,36 @@ func MonthsForYear(year int) []time.Month {
 	return []time.Month{time.January, time.February, time.March, time.April, time.May, time.June, time.July, time.August, time.September, time.October, time.November, time.December}
 }
 
+type postsByDate []blog.Post
+
+func (posts postsByDate) Len() int {
+	return len(posts)
+}
+
+func (posts postsByDate) Less(i, j int) bool {
+	if posts[j].Date().Equal(posts[i].Date()) {
+		//Sort by uuid instead
+		cmp := bytes.Compare([]byte(posts[i].UUID()), []byte(posts[j].UUID()))
+
+		return cmp <= 0
+	}
+
+	return posts[j].Date().Before(posts[i].Date())
+}
+
+func (posts postsByDate) Swap(i, j int) {
+	posts[i], posts[j] = posts[j], posts[i]
+}
+
 // GetBlog constructs a new Blog context if not yet created, otherwise it returns the current blog context
 func GetBlog() blog.Blog {
 	var posts []blog.Post
 
-	for _, key := range allPostKeys() {
-		posts = append(posts, allPosts[key])
+	for _, post := range allPosts {
+		posts = append(posts, post)
 	}
+
+	sort.Sort(postsByDate(posts))
 
 	return blog.Blog{RecentPosts: posts}
 }
