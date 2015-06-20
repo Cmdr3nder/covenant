@@ -30,3 +30,26 @@ a.blogPost {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.blogYears {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.blogYears > .blogYear {
+    padding: 2em;
+    margin: 1em;
+
+    /*Rounded Borders*/
+    border-width: 0;
+    border-radius: 4px;
+    border-color: transparent;
+}
+
+.blogYears > .blogYear:nth-child(even) {
+    background-color: blue;
+}
+
+.blogYears > .blogYear:nth-child(odd) {
+    background-color: green;
+}

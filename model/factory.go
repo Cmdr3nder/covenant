@@ -53,17 +53,10 @@ func allPostKeys() []string {
 // AllPostYears returs a list of all years that have been posted in
 func AllPostYears() []int {
 	var years []int
-	yearMap := make(map[int]bool)
 
-	for _, post := range allPosts {
-		year := post.Date().Year()
-		if !yearMap[year] {
-			yearMap[year] = true
-			years = append(years, year)
-		}
+	for year := time.Now().Year(); year >= 2013; year-- {
+		years = append(years, year)
 	}
-
-	sort.Sort(sort.Reverse(sort.IntSlice(years)))
 
 	return years
 }
