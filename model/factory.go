@@ -2,6 +2,8 @@ package model
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"sort"
 	"time"
 
@@ -18,7 +20,7 @@ func newLocalDay(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day, 0, 0, 0, 0, time.Local)
 }
 
-var allPosts = map[string]blog.Post{
+var allPosts = map[string]blog.VideoPost{
 	"2cellos-the-trooper-overture":    blog.NewVideoPost(newLocalDay(2015, time.June, 20), "2cellos-the-trooper-overture", "2CELLOS - The Trooper Overture", "", "eVH1Y15omgE", true),
 	"2cellos-thunderstruck":           blog.NewVideoPost(newLocalDay(2014, time.June, 25), "2cellos-thunderstruck", "2CELLOS - Thunderstruck", "", "uT3SBzmDxGk", true),
 	"the-expert":                      blog.NewVideoPost(newLocalDay(2014, time.May, 05), "the-expert", "The Expert", "", "BKorP55Aqvg", true),
@@ -40,6 +42,16 @@ var allPosts = map[string]blog.Post{
 	"using-python-to-code-by-voice":   blog.NewVideoPost(newLocalDay(2013, time.September, 4), "using-python-to-code-by-voice", "Using Python to Code by Voice", "This is so cool. Hopefully he releases this tool soon so that when I go to do something similar I can just extend his solution instead of starting from scratch.", "8SkdfdXWYaI", true),
 }
 
+func marshalize(posts map[string]blog.VideoPost) {
+	ff7, err := json.Marshal(posts)
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("%s", err))
+	} else {
+		fmt.Println(string(ff7))
+	}
+}
+
 // AllPostYears returs a list of all years that have been posted in
 func AllPostYears() []int {
 	var years []int
@@ -47,6 +59,8 @@ func AllPostYears() []int {
 	for year := time.Now().Year(); year >= 2013; year-- {
 		years = append(years, year)
 	}
+
+	marshalize(allPosts)
 
 	return years
 }
@@ -98,7 +112,7 @@ func GetBlog() blog.Blog {
 	var posts []blog.Post
 
 	for _, post := range allPosts {
-		posts = append(posts, post)
+		posts = append(posts, blog.Post(&post))
 	}
 
 	sort.Sort(postsByDate(posts))
@@ -108,5 +122,6 @@ func GetBlog() blog.Blog {
 
 // GetPost constructs a complete post entry for the given uuid or an unfound post entry if uuid was unrecognized
 func GetPost(uuid string) blog.Post {
-	return allPosts[uuid]
+	p := allPosts[uuid]
+	return blog.Post(&p)
 }
