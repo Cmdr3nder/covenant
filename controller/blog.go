@@ -62,14 +62,24 @@ func getBlogRoot(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	page, err := archiveLayout.RenderStep(page.Page{Data: blog.Years()})
+	years, err := blog.Years()
+
+	if err != nil {
+		return err
+	}
+
+	page, err := archiveLayout.RenderStep(page.Page{Data: years})
 
 	if err != nil {
 		return err
 	}
 
 	page.Title = "Andrew Bowers: Blog"
-	page.Data = model.GetBlog()
+	page.Data, err = blog.Context()
+
+	if err != nil {
+		return err
+	}
 
 	return l.Render(w, page)
 }
@@ -99,7 +109,11 @@ func getBlogYear(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	months := model.MonthsForYear(year)
+	months, err := blog.Months(year)
+
+	if err != nil {
+		return err
+	}
 
 	page, err := yearLayout.RenderStep(page.Page{Data: blogYearView{Year: year, Months: months, IsValid: len(months) > 0}})
 
@@ -108,7 +122,11 @@ func getBlogYear(c model.Context, w http.ResponseWriter, r *http.Request) error 
 	}
 
 	page.Title = "Andrew Bowers: Blog"
-	page.Data = model.GetBlog()
+	page.Data, err = blog.Context()
+
+	if err != nil {
+		return err
+	}
 
 	return l.Render(w, page)
 }
@@ -120,7 +138,31 @@ func getBlogMonth(c model.Context, w http.ResponseWriter, r *http.Request) error
 		return err
 	}
 
-	page := page.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Month: %s %s", c.GetURLParam("year"), c.GetURLParam("month"))), Data: model.GetBlog()}
+	year, err := strconv.Atoi(c.GetURLParam("year"))
+
+	if err != nil {
+		return err
+	}
+
+	month, err := strconv.Atoi(c.GetURLParam("month"))
+
+	if err != nil {
+		return err
+	}
+
+	_, err = blog.MonthPosts(year, time.Month(month))
+
+	if err != nil {
+		return err
+	}
+
+	blogContext, err := blog.Context()
+
+	if err != nil {
+		return err
+	}
+
+	page := page.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Month: %s %s", c.GetURLParam("year"), c.GetURLParam("month"))), Data: blogContext}
 
 	return l.Render(w, page)
 }
@@ -132,7 +174,7 @@ func getBlogPost(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	post := model.GetPost(c.GetURLParam("guid"))
+	post, err := blog.RetrievePost(c.GetURLParam("guid"))
 
 	//verify year and month match c.GetURLParam("year"), c.GetURLParam("month")
 
@@ -149,7 +191,11 @@ func getBlogPost(c model.Context, w http.ResponseWriter, r *http.Request) error 
 	}
 
 	page.Title = "Andrew Bowers: Blog"
-	page.Data = model.GetBlog()
+	page.Data, err = blog.Context()
+
+	if err != nil {
+		return err
+	}
 
 	return l.Render(w, page)
 }
