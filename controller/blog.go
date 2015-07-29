@@ -10,6 +10,7 @@ import (
 	"github.com/ender4021/covenant/model"
 	"github.com/ender4021/covenant/model/page"
 	"github.com/ender4021/covenant/service"
+	"github.com/ender4021/covenant/service/blog"
 	"github.com/ender4021/covenant/service/layout"
 	"github.com/ender4021/covenant/service/layout/then"
 	"github.com/ender4021/covenant/service/server"
@@ -61,7 +62,7 @@ func getBlogRoot(c model.Context, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	page, err := archiveLayout.RenderStep(page.Page{Data: model.AllPostYears()})
+	page, err := archiveLayout.RenderStep(page.Page{Data: blog.Years()})
 
 	if err != nil {
 		return err

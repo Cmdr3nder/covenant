@@ -2,8 +2,6 @@ package model
 
 import (
 	"bytes"
-	"encoding/json"
-	"fmt"
 	"sort"
 	"time"
 
@@ -42,16 +40,6 @@ var allPosts = map[string]blog.VideoPost{
 	"using-python-to-code-by-voice":   blog.NewVideoPost(newLocalDay(2013, time.September, 4), "using-python-to-code-by-voice", "Using Python to Code by Voice", "This is so cool. Hopefully he releases this tool soon so that when I go to do something similar I can just extend his solution instead of starting from scratch.", "8SkdfdXWYaI", true),
 }
 
-func marshalize(posts map[string]blog.VideoPost) {
-	ff7, err := json.Marshal(posts)
-
-	if err != nil {
-		fmt.Println(fmt.Errorf("%s", err))
-	} else {
-		fmt.Println(string(ff7))
-	}
-}
-
 // AllPostYears returs a list of all years that have been posted in
 func AllPostYears() []int {
 	var years []int
@@ -59,8 +47,6 @@ func AllPostYears() []int {
 	for year := time.Now().Year(); year >= 2013; year-- {
 		years = append(years, year)
 	}
-
-	marshalize(allPosts)
 
 	return years
 }
