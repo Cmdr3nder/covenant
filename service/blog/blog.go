@@ -7,20 +7,59 @@ import (
 	"fmt"
 	"time"
 
-	// Just imported to initialize the db connector so that we can use the default SQL package
-	_ "github.com/lib/pq"
-
 	blogModels "github.com/ender4021/covenant/model/blog"
 )
 
+var retrievePost *sql.Stmt
+var monthPosts *sql.Stmt
+var recentPosts *sql.Stmt
+var years *sql.Stmt
+var postIt *sql.Stmt
+var months *sql.Stmt
+
+// PrepareStatements prepares sql statements so that this service can operate at a later time.
+func PrepareStatements(db *sql.DB) error {
+	stmt, err := db.Prepare("SELECT type, title, text, \"postedAt\", \"extraData\", slug FROM posts WHERE slug=$1")
+	if err != nil {
+		return err
+	}
+	retrievePost = stmt
+
+	stmt, err = db.Prepare("SELECT type, title, text, \"postedAt\", \"extraData\", slug FROM posts WHERE extract(year from \"postedAt\")=$1 AND extract(month from \"postedAt\")=$2 ORDER BY \"postedAt\" DESC")
+	if err != nil {
+		return err
+	}
+	monthPosts = stmt
+
+	stmt, err = db.Prepare("SELECT type, title, text, \"postedAt\", \"extraData\", slug FROM posts ORDER BY \"postedAt\" DESC LIMIT $1")
+	if err != nil {
+		return err
+	}
+	recentPosts = stmt
+
+	stmt, err = db.Prepare("SELECT distinct extract(year from \"postedAt\") AS year FROM posts ORDER BY year desc")
+	if err != nil {
+		return err
+	}
+	years = stmt
+
+	stmt, err = db.Prepare("INSERT INTO posts (slug, title, text, \"postedAt\", type, \"extraData\") VALUES ($1, $2, $3, $4, 'video', $5)")
+	if err != nil {
+		return err
+	}
+	postIt = stmt
+
+	stmt, err = db.Prepare("SELECT distinct extract(month from \"postedAt\") AS month FROM posts WHERE extract(year from \"postedAt\")=$1 ORDER BY month")
+	if err != nil {
+		return err
+	}
+	months = stmt
+
+	return nil
+}
+
 // RetrievePost gets the post with the given uuid
 func RetrievePost(uuid string) (blogModels.Post, error) {
-	db, err := sql.Open("postgres", "user=postgres password=~DualDisk4021 dbname=covenant sslmode=disable")
-	defer db.Close()
-	if err != nil {
-		return nil, err
-	}
-
 	var t sql.NullString
 	var title sql.NullString
 	var text sql.NullString
@@ -28,7 +67,7 @@ func RetrievePost(uuid string) (blogModels.Post, error) {
 	var extraData sql.NullString
 	var slug sql.NullString
 
-	err = db.QueryRow("SELECT type, title, text, \"postedAt\", \"extraData\", slug FROM posts WHERE slug=$1", uuid).Scan(&t, &title, &text, &postedAt, &extraData, &slug)
+	err := retrievePost.QueryRow(uuid).Scan(&t, &title, &text, &postedAt, &extraData, &slug)
 
 	if err != nil {
 		return nil, err
@@ -44,13 +83,7 @@ func RetrievePost(uuid string) (blogModels.Post, error) {
 
 // MonthPosts gets all posts for the given month in the given year
 func MonthPosts(year int, month time.Month) ([]blogModels.Post, error) {
-	db, err := sql.Open("postgres", "user=postgres password=~DualDisk4021 dbname=covenant sslmode=disable")
-	defer db.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := db.Query("SELECT type, title, text, \"postedAt\", \"extraData\", slug FROM posts WHERE extract(year from \"postedAt\")=$1 AND extract(month from \"postedAt\")=$2 ORDER BY \"postedAt\" DESC", year, month)
+	rows, err := monthPosts.Query(year, month)
 
 	if err != nil {
 		return nil, err
@@ -80,33 +113,29 @@ func MonthPosts(year int, month time.Month) ([]blogModels.Post, error) {
 }
 
 func constructPost(t sql.NullString, title sql.NullString, text sql.NullString, postedAt time.Time, extraData sql.NullString, slug sql.NullString) (blogModels.Post, error) {
-	if t.Valid && t.String == "video" {
-		var postData blogModels.VideoPostData
+	if t.Valid {
+		if t.String == "video" {
+			var postData blogModels.VideoPostData
 
-		if extraData.Valid {
-			err := json.Unmarshal([]byte(extraData.String), &postData)
-			if err != nil {
-				return nil, err
+			if extraData.Valid {
+				err := json.Unmarshal([]byte(extraData.String), &postData)
+				if err != nil {
+					return nil, err
+				}
+			} else {
+				postData = blogModels.VideoPostData{}
 			}
-		} else {
-			postData = blogModels.VideoPostData{}
-		}
 
-		return &blogModels.VideoPost{PostedAt: postedAt, Unique: slug.String, Header: title.String, Text: text.String, PostData: postData}, nil
+			return &blogModels.VideoPost{PostedAt: postedAt, Unique: slug.String, Header: title.String, Text: text.String, PostData: postData}, nil
+		}
 	}
 
 	return nil, errors.New("Unrecognized post type.")
 }
 
-// RecentPosts the last "last" posts for the blog
+// RecentPosts gets the last "last" posts for the blog
 func RecentPosts(last int) ([]blogModels.Post, error) {
-	db, err := sql.Open("postgres", "user=postgres password=~DualDisk4021 dbname=covenant sslmode=disable")
-	defer db.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := db.Query("SELECT type, title, text, \"postedAt\", \"extraData\", slug FROM posts ORDER BY \"postedAt\" DESC LIMIT $1", last)
+	rows, err := recentPosts.Query(last)
 
 	if err != nil {
 		return nil, err
@@ -137,13 +166,7 @@ func RecentPosts(last int) ([]blogModels.Post, error) {
 
 // Years returns the years that have posts for this blog
 func Years() ([]int, error) {
-	db, err := sql.Open("postgres", "user=postgres password=~DualDisk4021 dbname=covenant sslmode=disable")
-	defer db.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := db.Query("SELECT distinct extract(year from \"postedAt\") AS year FROM posts ORDER BY year desc")
+	rows, err := years.Query()
 
 	if err != nil {
 		return nil, err
@@ -165,13 +188,6 @@ func Years() ([]int, error) {
 
 // PostIt sends the post to the db...
 func PostIt(p blogModels.VideoPost) {
-	db, err := sql.Open("postgres", "user=postgres password=~DualDisk4021 dbname=covenant sslmode=disable")
-	defer db.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
 	jsn, err := json.Marshal(p.PostData)
 
 	if err != nil {
@@ -179,7 +195,7 @@ func PostIt(p blogModels.VideoPost) {
 		return
 	}
 
-	_, err = db.Exec("INSERT INTO posts (slug, title, text, \"postedAt\", type, \"extraData\") VALUES ($1, $2, $3, $4, 'video', $5)", p.Unique, p.Header, p.Text, p.PostedAt.Format("January 2, 2006"), string(jsn))
+	_, err = postIt.Exec(p.Unique, p.Header, p.Text, p.PostedAt.Format("January 2, 2006"), string(jsn))
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -191,13 +207,7 @@ func PostIt(p blogModels.VideoPost) {
 
 // Months returns the months that have posts for this blog in the given year
 func Months(year int) ([]time.Month, error) {
-	db, err := sql.Open("postgres", "user=postgres password=~DualDisk4021 dbname=covenant sslmode=disable")
-	defer db.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := db.Query("SELECT distinct extract(month from \"postedAt\") AS month FROM posts WHERE extract(year from \"postedAt\")=$1 ORDER BY month", year)
+	rows, err := months.Query(year)
 
 	if err != nil {
 		return nil, err

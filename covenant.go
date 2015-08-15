@@ -1,10 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+
+	// Just imported to initialize the db connector so that we can use the default SQL package
+	_ "github.com/lib/pq"
 
 	"github.com/ender4021/covenant/controller"
 	"github.com/ender4021/covenant/service"
+	"github.com/ender4021/covenant/service/blog"
 	"github.com/ender4021/covenant/service/config"
 )
 
@@ -26,7 +31,24 @@ func main() {
 	controller.RegisterWorkController(server)
 	controller.RegisterStaticFileController(server, config)
 
+	db, err := sql.Open("postgres", config.GetString("dbconn"))
+
+	if err != nil {
+		panic(fmt.Errorf("Fatal error opening postgre db: %s \n", err))
+	}
+	defer db.Close()
+	prepareSql(db)
+
 	server.Serve()
+}
+
+func prepareSql(db *sql.DB) {
+	//Prepare SQL Statements
+	err := blog.PrepareStatements(db)
+
+	if err != nil {
+		panic(fmt.Errorf("Fatal error preparing sql statements for blog: %s\n", err))
+	}
 }
 
 func setupViewConfigDefaults(config config.Config) {
@@ -62,4 +84,5 @@ func setupBlogViewsConfig(config config.Config) {
 	config.SetDefault("views_blog_archive", config.GetString("views_blog")+"/archive.html")
 	config.SetDefault("views_blog_video", config.GetString("views_blog")+"/video.html")
 	config.SetDefault("views_blog_year", config.GetString("views_blog")+"/year.html")
+	config.SetDefault("views_blog_month", config.GetString("views_blog")+"/month.html")
 }

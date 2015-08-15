@@ -1,13 +1,12 @@
 package controller
 
 import (
-	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/ender4021/covenant/model"
+	blogModels "github.com/ender4021/covenant/model/blog"
 	"github.com/ender4021/covenant/model/page"
 	"github.com/ender4021/covenant/service"
 	"github.com/ender4021/covenant/service/blog"
@@ -131,8 +130,21 @@ func getBlogYear(c model.Context, w http.ResponseWriter, r *http.Request) error 
 	return l.Render(w, page)
 }
 
+type blogMonthView struct {
+	Year    int
+	Month   time.Month
+	Posts   []blogModels.Post
+	IsValid bool
+}
+
 func getBlogMonth(c model.Context, w http.ResponseWriter, r *http.Request) error {
 	l, err := getCombinedBlogLayout()
+
+	if err != nil {
+		return err
+	}
+
+	monthLayout, err := service.GetLayout("views_blog_month")
 
 	if err != nil {
 		return err
@@ -150,7 +162,13 @@ func getBlogMonth(c model.Context, w http.ResponseWriter, r *http.Request) error
 		return err
 	}
 
-	_, err = blog.MonthPosts(year, time.Month(month))
+	monthPosts, err := blog.MonthPosts(year, time.Month(month))
+
+	if err != nil {
+		return err
+	}
+
+	page, err := monthLayout.RenderStep(page.Page{Data: blogMonthView{Year: year, Month: time.Month(month), Posts: monthPosts, IsValid: len(monthPosts) > 0}})
 
 	if err != nil {
 		return err
@@ -162,7 +180,8 @@ func getBlogMonth(c model.Context, w http.ResponseWriter, r *http.Request) error
 		return err
 	}
 
-	page := page.Page{Title: "Andrew Bowers: Blog", Body: template.HTML(fmt.Sprintf("Blog Month: %s %s", c.GetURLParam("year"), c.GetURLParam("month"))), Data: blogContext}
+	page.Title = "Andrew Bowers: Blog"
+	page.Data = blogContext
 
 	return l.Render(w, page)
 }
