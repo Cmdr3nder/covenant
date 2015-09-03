@@ -6,6 +6,9 @@
         {{if .Data.IsYouTube}}
         <iframe src="https://www.youtube.com/embed/{{.Data.VideoID}}" frameborder="0" allowfullscreen></iframe>
         {{end}}
+        {{if .Data.IsVimeo}}
+        <iframe src="https://player.vimeo.com/video/{{.Data.VideoID}}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        {{end}}
     </div>
     <footer class="comment">
         {{.Body}}

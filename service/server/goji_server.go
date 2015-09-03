@@ -28,3 +28,7 @@ func (s *gojiServer) Get(pattern interface{}, fn func(model.Context, http.Respon
 func (s *gojiServer) Serve() {
 	goji.Serve()
 }
+
+func (s *gojiServer) Handle(pattern interface{}, mux *web.Mux) {
+	goji.Handle(pattern, mux)
+}

@@ -30,6 +30,7 @@ func main() {
 	controller.RegisterBlogController(server)
 	controller.RegisterWorkController(server)
 	controller.RegisterStaticFileController(server, config)
+	controller.RegisterAdminController(server, config)
 
 	db, err := sql.Open("postgres", config.GetString("dbconn"))
 

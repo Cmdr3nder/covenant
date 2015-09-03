@@ -54,5 +54,6 @@ func (p *VideoPost) LayoutID() string {
 // VideoPostData is the extra information a page requires when rendering a video post
 type VideoPostData struct {
 	IsYouTube bool
+	IsVimeo   bool
 	VideoID   string
 }

@@ -1,4 +1,10 @@
 <h1>{{.Data.Month}} {{.Data.Year}}</h1>
-{{range $i, $post := .Data.Posts}}
-    <a href="/blog/{{$post.Date.Year}}/{{$post.Date.Month | MonthAsInt}}/{{$post.UUID}}" class="blogPost">{{$post.Title}}</a>
+{{if .Data.IsValid}}
+    {{range $i, $post := .Data.Posts}}
+        <a href="/blog/{{$post.Date.Year}}/{{$post.Date.Month | MonthAsInt}}/{{$post.UUID}}" class="blogPost">{{$post.Title}}</a>
+    {{end}}
+{{else}}
+    <div class="warning">
+        Sorry, there are no posts for this month.
+    </div>
 {{end}}
