@@ -10,11 +10,11 @@ import (
 // Server is the interface for an http server based on our Context interface
 type Server interface {
 	Get(interface{}, func(model.Context, http.ResponseWriter, *http.Request) error)
-	Handle(interface{}, *web.Mux)
+	Handle(interface{}, MuxWrapper)
 	Serve()
 }
 
-// New returns web.New()
-func New() *web.Mux {
-	return web.New()
+// NewMux returns a wrapper for web.New()
+func NewMux() MuxWrapper {
+	return MuxWrapper{Mux: web.New()}
 }

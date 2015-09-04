@@ -58,6 +58,7 @@ func setupViewConfigDefaults(config config.Config) {
 	setupSharedViewsConfig(config)
 	setupRootViewsConfig(config)
 	setupBlogViewsConfig(config)
+	setupAdminViewsConfig(config)
 
 	config.SetDefault("media", "./media")
 	config.SetDefault("css", config.GetString("media")+"/css")
@@ -86,4 +87,14 @@ func setupBlogViewsConfig(config config.Config) {
 	config.SetDefault("views_blog_video", config.GetString("views_blog")+"/video.html")
 	config.SetDefault("views_blog_year", config.GetString("views_blog")+"/year.html")
 	config.SetDefault("views_blog_month", config.GetString("views_blog")+"/month.html")
+	config.SetDefault("views_blog_link", config.GetString("views_blog")+"/link.html")
+}
+
+func setupAdminViewsConfig(config config.Config) {
+	config.SetDefault("views_admin", config.GetString("views")+"/admin")
+
+	config.SetDefault("views_admin_blog", config.GetString("views_admin")+"/blog")
+	config.SetDefault("views_admin_blog_index", config.GetString("views_admin_blog")+"/index.html")
+	config.SetDefault("views_admin_blog_video", config.GetString("views_admin_blog")+"/video.html")
+	config.SetDefault("views_admin_blog_link", config.GetString("views_admin_blog")+"/link.html")
 }

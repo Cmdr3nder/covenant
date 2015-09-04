@@ -11,7 +11,9 @@ type Post interface {
 	Date() time.Time
 	UUID() string
 	Title() string
+	Comment() string
 	Data() interface{}
 	AsPage() page.Page
 	LayoutID() string
+	Type() string
 }

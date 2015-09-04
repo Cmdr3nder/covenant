@@ -1,0 +1,15 @@
+<button type="button" class="videoPostButton">Add Video Post</button>
+<button type="button" class="linkPostButton">Add Link Post</button>
+
+<script type="text/javascript">
+function linkifyButton(btnSelector, location) {
+    jQuery(btnSelector).click(function() {
+        window.location.href = location;
+    });
+}
+
+jQuery(document).ready(function() {
+    linkifyButton('.videoPostButton', '/admin/blog/post/video');
+    linkifyButton('.linkPostButton', '/admin/blog/post/link');
+});
+</script>

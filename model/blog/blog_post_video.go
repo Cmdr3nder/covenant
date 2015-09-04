@@ -2,14 +2,16 @@ package blog
 
 import (
 	"html/template"
+	"strings"
 	"time"
 
 	"github.com/ender4021/covenant/model/page"
 )
 
 // NewVideoPost builds a new video post from the given details
-func NewVideoPost(date time.Time, uuid string, title string, comment string, videoID string, isYouTube bool) VideoPost {
-	return VideoPost{PostedAt: date, Unique: uuid, Header: title, Text: comment, PostData: VideoPostData{IsYouTube: isYouTube, VideoID: videoID}}
+func NewVideoPost(date time.Time, uuid string, title string, comment string, videoID string, videoProvider string) VideoPost {
+	videoProvider = strings.ToLower(videoProvider)
+	return VideoPost{PostedAt: date, Unique: uuid, Header: title, Text: comment, PostData: VideoPostData{IsYouTube: videoProvider == "youtube", IsVimeo: videoProvider == "vimeo", VideoID: videoID}}
 }
 
 // VideoPost is a blog post that primarily focuses on some linked video content
@@ -36,6 +38,11 @@ func (p *VideoPost) Title() string {
 	return p.Header
 }
 
+// Comment returns the text of the post
+func (p *VideoPost) Comment() string {
+	return p.Text
+}
+
 // Data returns the extra data for the post
 func (p *VideoPost) Data() interface{} {
 	return p.PostData
@@ -49,6 +56,11 @@ func (p *VideoPost) AsPage() page.Page {
 // LayoutID returns the string that represents the layout to use for the post
 func (p *VideoPost) LayoutID() string {
 	return "views_blog_video"
+}
+
+// Type returns the type of post to be inserted into the DB
+func (p *VideoPost) Type() string {
+	return "video"
 }
 
 // VideoPostData is the extra information a page requires when rendering a video post

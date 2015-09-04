@@ -14,7 +14,7 @@ var retrievePost *sql.Stmt
 var monthPosts *sql.Stmt
 var recentPosts *sql.Stmt
 var years *sql.Stmt
-var postIt *sql.Stmt
+var insertPost *sql.Stmt
 var months *sql.Stmt
 
 // PrepareStatements prepares sql statements so that this service can operate at a later time.
@@ -43,11 +43,11 @@ func PrepareStatements(db *sql.DB) error {
 	}
 	years = stmt
 
-	stmt, err = db.Prepare("INSERT INTO posts (slug, title, text, \"postedAt\", type, \"extraData\") VALUES ($1, $2, $3, $4, 'video', $5)")
+	stmt, err = db.Prepare("INSERT INTO posts (slug, title, text, \"postedAt\", \"extraData\", type) VALUES ($1, $2, $3, $4, $5, $6)")
 	if err != nil {
 		return err
 	}
-	postIt = stmt
+	insertPost = stmt
 
 	stmt, err = db.Prepare("SELECT distinct extract(month from \"postedAt\") AS month FROM posts WHERE extract(year from \"postedAt\")=$1 ORDER BY month")
 	if err != nil {
@@ -127,6 +127,19 @@ func constructPost(t sql.NullString, title sql.NullString, text sql.NullString, 
 			}
 
 			return &blogModels.VideoPost{PostedAt: postedAt, Unique: slug.String, Header: title.String, Text: text.String, PostData: postData}, nil
+		} else if t.String == "link" {
+			var postData blogModels.LinkPostData
+
+			if extraData.Valid {
+				err := json.Unmarshal([]byte(extraData.String), &postData)
+				if err != nil {
+					return nil, err
+				}
+			} else {
+				postData = blogModels.LinkPostData{}
+			}
+
+			return &blogModels.LinkPost{PostedAt: postedAt, Unique: slug.String, Header: title.String, Text: text.String, PostData: postData}, nil
 		}
 	}
 
@@ -186,23 +199,23 @@ func Years() ([]int, error) {
 	return years, nil
 }
 
-// PostIt sends the post to the db...
-func PostIt(p blogModels.VideoPost) {
-	jsn, err := json.Marshal(p.PostData)
+// InsertPost sends the post to the db...
+func InsertPost(p blogModels.Post) error {
+	jsn, err := json.Marshal(p.Data())
 
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		return err
 	}
 
-	_, err = postIt.Exec(p.Unique, p.Header, p.Text, p.PostedAt.Format("January 2, 2006"), string(jsn))
+	_, err = insertPost.Exec(p.UUID(), p.Title(), p.Comment(), p.Date().Format("January 2, 2006"), string(jsn), p.Type())
 
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		return err
 	}
 
-	fmt.Println("row inserted")
+	fmt.Println("post row inserted")
+
+	return nil
 }
 
 // Months returns the months that have posts for this blog in the given year

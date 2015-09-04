@@ -29,6 +29,6 @@ func (s *gojiServer) Serve() {
 	goji.Serve()
 }
 
-func (s *gojiServer) Handle(pattern interface{}, mux *web.Mux) {
-	goji.Handle(pattern, mux)
+func (s *gojiServer) Handle(pattern interface{}, mux MuxWrapper) {
+	goji.Handle(pattern, mux.Mux)
 }
